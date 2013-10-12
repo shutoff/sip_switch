@@ -3,9 +3,18 @@ package ru.shutoff.sip_switch;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Date;
 
 public class Phone extends BroadcastReceiver {
 
@@ -33,10 +42,12 @@ public class Phone extends BroadcastReceiver {
             boolean use_sip = false;
             if (number.length() > 7) {
                 use_sip = true;
-                if ((lac >= 7801) && (lac <= 7815))
-                    use_sip = false;
-                if ((lac >= 4701) && (lac <= 4715))
-                    use_sip = false;
+                if (!telephony.isNetworkRoaming()) {
+                    if ((lac >= 7801) && (lac <= 7815))
+                        use_sip = false;
+                    if ((lac >= 4701) && (lac <= 4715))
+                        use_sip = false;
+                }
                 if (!use_sip) {
                     String zone = "";
                     if (number.substring(0, 1).equals("8"))
@@ -72,7 +83,6 @@ public class Phone extends BroadcastReceiver {
             963, 964, 965, 966, 967, 968, 904, 950, 951, 952, 953, 991, 901
     };
 
-/*
     static public void appendLog(String text) {
         File logFile = Environment.getExternalStorageDirectory();
         logFile = new File(logFile, "phone.log");
@@ -98,5 +108,5 @@ public class Phone extends BroadcastReceiver {
         String s = sw.toString();
         appendLog(s);
     }
-*/
+
 }
